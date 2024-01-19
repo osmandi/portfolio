@@ -39,6 +39,7 @@ sls plugin install --name serverless-s3-local
 aws configure --profile s3local
 
 # Install requirements to emulate [Lambda runtime for Python 3.9](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
+# to implement pillow library in prod, use AWS Lambda Layer.
 python3.9 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -51,5 +52,5 @@ pip install -r requirements.txt
 sls offline start
 
 # Put file with S3
-aws --endpoint http://localhost:4569 s3 cp ~/tmp/data.csv s3://local-bucket/userdata.csv --profile s3local
+aws --endpoint http://localhost:4569 s3 cp ./sample.png s3://local-bucket/input/sample.png --profile s3local
 ```
