@@ -8,6 +8,7 @@ Technologies:
 - Serverless Framework plugins (for local development):
   - serverless-offline
   - serverless-s3-local
+  - serverless-python-requirements
 
 **Architecture description**
 
@@ -35,12 +36,13 @@ npm install -g serverless
 sls plugin install --name serverless-offline
 sls plugin install --name serverless-s3-local
 
-# Setup S3 for offline development
+# Setup S3 for offline development. Setting values S3RVER
 aws configure --profile s3local
 
-# Setting the next values
-#aws_access_key_id = S3RVER
-#aws_secret_access_key = S3RVER
+# Install requirements to emulate [Lambda runtime for Python 3.9](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
+python3.9 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ## Run in local
