@@ -9,7 +9,21 @@ Technologies:
   - serverless-offline
   - serverless-s3-local
 
-Architecture description
+**Architecture description**
+
+```mermaid
+flowchart TB
+    subgraph "S3"
+    input("s3://sls-bucket/input/")
+    output("s3://sls-bucket/output/")
+    end
+    subgraph "AWS Lambda"
+    sls("sls-thumbnail-generator")
+    end
+    A["image.jpg"] -- Put file --> input
+    input -- invoke lambda --> sls
+    sls -- generate image_thumbnail.jpg --> output
+```
 
 ## Instalation in local
 
