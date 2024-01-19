@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# Node
+node_modules/
+package-lock.json
+package.json
+
 # Images and other files
 *.png
 *.jpg 
