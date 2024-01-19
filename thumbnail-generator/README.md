@@ -8,7 +8,6 @@ Technologies:
 - Serverless Framework plugins (for local development):
   - serverless-offline
   - serverless-s3-local
-  - serverless-python-requirements
 
 **Architecture description**
 
