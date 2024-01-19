@@ -1,0 +1,31 @@
+service: sls
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  memorySize: 128
+
+plugins:
+  - serverless-offline
+  - serverless-s3-local
+custom:
+  s3:
+    host: localhost
+    directory: /tmp
+resources:
+  Resources:
+    NewResource:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: local-bucket
+
+functions:
+  thumbnail-generator:
+    handler: handler.main
+    events:
+      - s3:
+          bucket: local-bucket
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: input/
