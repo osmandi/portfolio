@@ -13,7 +13,7 @@ Technologies:
 
 ```mermaid
 flowchart TB
-    subgraph "S3"
+    subgraph "AWS S3"
     input("s3://sls-bucket/input/")
     output("s3://sls-bucket/output/")
     end
