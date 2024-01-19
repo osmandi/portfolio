@@ -6,23 +6,23 @@ Technologies:
 - Python
 - Serverless Framework in AWS
 - Serverless Framework plugins (for local development):
-  - serverless-offline
-  - serverless-s3-local
+  - serverless-offline: Simulate AWS Lambda in local.
+  - serverless-s3-local: Simulate AWS S3 in local.
 
 **Architecture description**
 
 ```mermaid
 flowchart TB
     subgraph "AWS S3"
-    input("s3://sls-bucket/input/")
-    output("s3://sls-bucket/output/")
+    input("s3://local-bucket/input/")
+    output("s3://local-bucket/output/")
     end
     subgraph "AWS Lambda"
     sls("sls-thumbnail-generator")
     end
-    A["image.jpg"] -- Put file --> input
+    A["higor_logo.jpg"] -- Put file --> input
     input -- invoke lambda --> sls
-    sls -- generate image_thumbnail.jpg --> output
+    sls -- generate higor_logo_thumbnail.jpg --> output
 ```
 
 ## Instalation in local
@@ -45,12 +45,24 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Run in local
+## Run and probe in local
 
 ```Bash
 # Run serverless offline
-sls offline start
+SLS_DEBUG=* sls offline start
+
+# Download image
+wget -O /tmp/higor_logo.jpg https://raw.githubusercontent.com/osmandi/higor/master/higor_logo.jpg
+
+# Open orignal image
+open /tmp/higor_logo.jpg
 
 # Put file with S3
-aws --endpoint http://localhost:4569 s3 cp ./sample.png s3://local-bucket/input/sample.png --profile s3local
+aws --endpoint http://localhost:4569 s3 cp /tmp/higor_logo.jpg s3://local-bucket/input/higor_logo.jpg --profile s3local
+
+# Download thumbnail generated
+aws --endpoint http://localhost:4569 s3 cp s3://local-bucket/output/higor_logo_thumbnail.jpg . --profile s3local
+
+# Open thumbnail generated
+open ./higor_logo_thumbnail.jpg
 ```
