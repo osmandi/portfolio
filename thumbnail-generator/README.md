@@ -48,6 +48,9 @@ pip install -r requirements.txt
 ## Run and probe in local
 
 ```Bash
+# Activate python environment
+source venv/bin/activate
+
 # Run serverless offline
 SLS_DEBUG=* sls offline start
 
