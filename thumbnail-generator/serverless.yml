@@ -9,10 +9,12 @@ provider:
 plugins:
   - serverless-offline
   - serverless-s3-local
+
 custom:
   s3:
     host: localhost
-    directory: /tmp
+    directory: /tmp	
+
 resources:
   Resources:
     NewResource:
