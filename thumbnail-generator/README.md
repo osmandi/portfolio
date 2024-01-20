@@ -12,7 +12,7 @@ Technologies:
 **Architecture description**
 
 ```mermaid
-flowchart TB
+flowchart BT
     subgraph "AWS S3"
     input("s3://local-bucket/input/")
     output("s3://local-bucket/output/")
@@ -69,6 +69,10 @@ aws --endpoint http://localhost:4569 s3 cp s3://local-bucket/output/higor_logo_t
 # Open thumbnail generated
 open ./higor_logo_thumbnail.jpg
 ```
+
+## Demo
+
+![](./thumbnail-generator-demo.gif)
 
 ## Optimize time and billing
 
