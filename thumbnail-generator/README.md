@@ -52,13 +52,13 @@ pip install -r requirements.txt
 SLS_DEBUG=* sls offline start
 
 # Download image
-wget -O /tmp/higor_logo.jpg https://raw.githubusercontent.com/osmandi/higor/master/higor_logo.jpg
+wget -O ./higor_logo.jpg https://raw.githubusercontent.com/osmandi/higor/master/higor_logo.jpg
 
 # Open orignal image
-open /tmp/higor_logo.jpg
+open ./higor_logo.jpg
 
 # Put file with S3
-aws --endpoint http://localhost:4569 s3 cp /tmp/higor_logo.jpg s3://local-bucket/input/higor_logo.jpg --profile s3local
+aws --endpoint http://localhost:4569 s3 cp ./higor_logo.jpg s3://local-bucket/input/higor_logo.jpg --profile s3local
 
 # Download thumbnail generated
 aws --endpoint http://localhost:4569 s3 cp s3://local-bucket/output/higor_logo_thumbnail.jpg . --profile s3local
@@ -66,3 +66,8 @@ aws --endpoint http://localhost:4569 s3 cp s3://local-bucket/output/higor_logo_t
 # Open thumbnail generated
 open ./higor_logo_thumbnail.jpg
 ```
+
+## Optimize time and billing
+
+- Use múltiples AWS Lambda depending with different memory allocation. Not make sense to use a lambda with 5 GB RAM to process a image with 10 MB.
+- Create an AWS Lambda to simulate a distribution of what lambda will process an image depending of its size.
