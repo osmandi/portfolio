@@ -1,4 +1,4 @@
-# data-engineering-projects
+# Portfolio
 
 Personal projects in Data Engineering.
 
