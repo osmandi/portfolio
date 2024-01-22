@@ -12,7 +12,7 @@ Technologies:
 **Architecture description**
 
 ```mermaid
-flowchart BT
+flowchart TB
     subgraph "AWS S3"
     input("s3://local-bucket/input/")
     output("s3://local-bucket/output/")
@@ -77,4 +77,3 @@ open ./higor_logo_thumbnail.jpg
 ## Optimize time and billing
 
 - Use múltiples AWS Lambda depending with different memory allocation. Not make sense to use a lambda with 5 GB RAM to process an image with 10 MB.
-- Create an AWS Lambda to simulate a distribution of what lambda will process an image depending of its size.
