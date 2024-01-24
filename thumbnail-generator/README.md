@@ -46,12 +46,7 @@ aws s3 rm s3://sls-etl/output/higor_logo_thumbnail.jpg \
 && sls remove --verbose
 ```
 
-
-## Demo
-
-![](./thumbnail-generator-demo.gif)
-
 ## Optimize time and billing
 
-- Use múltiples AWS Lambda depending with different memory allocation. Not make sense to use a lambda with 5 GB RAM to process an image with 10 MB.
+- Use multiple AWS Lambdas depending with different memory allocation. Not make sense to use a lambda with 5 GB RAM to process an image with 10 MB.
 - Remplace Pillow for another library to generate thumbnail images.
