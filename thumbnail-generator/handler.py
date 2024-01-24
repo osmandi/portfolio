@@ -6,7 +6,6 @@ Author: http://github.com/osmandi
 
 import boto3
 from PIL import Image
-from os import environ
 thumbnail_size = (128, 128)
 
 def thumbnail_generator(filename_original: str, filename_thumbnail: str):
@@ -17,7 +16,7 @@ def thumbnail_generator(filename_original: str, filename_thumbnail: str):
 
 def main(event, context):
 
-    s3_bucket = "sls-etl"
+    s3_bucket = event['Records'][0]['s3']['bucket']['name']
     s3_key = event["Records"][0]["s3"]["object"]["key"]
     filename = s3_key.split("/")[-1].split(".")[0]
     extension = s3_key.split("/")[-1].split(".")[1]
@@ -26,10 +25,7 @@ def main(event, context):
     filename_thumbnail = f"/tmp/{filename_thumbnail_base}"
  
     # Start s3 client
-    s3 = boto3.client("s3", 
-       aws_access_key_id = environ["SLS_AWS_ACCESS_KEY"],
-       aws_secret_access_key = environ["SLS_AWS_SECRET_KEY"]
-    )
+    s3 = boto3.client("s3")
 
     # Download image
     s3.download_file(s3_bucket, s3_key, filename_original)
