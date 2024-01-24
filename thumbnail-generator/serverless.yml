@@ -3,31 +3,30 @@ frameworkVersion: '3'
 
 provider:
   name: aws
-  runtime: python3.9
+  stage: dev
+  runtime: python3.11
   memorySize: 128
-
-plugins:
-  - serverless-offline
-  - serverless-s3-local
-
-custom:
+  region: us-east-1
   s3:
-    host: localhost
-    directory: /tmp	
+    slsETL:
+      name: sls-etl
 
-resources:
-  Resources:
-    NewResource:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: local-bucket
+package:
+  individually: true
+  patterns:
+      - '!**'
 
 functions:
   thumbnail-generator:
     handler: handler.main
+    package:
+      patterns:
+        - './handler.py'
+    layers:
+      - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p311-Pillow:2
     events:
       - s3:
-          bucket: local-bucket
+          bucket: slsETL
           event: s3:ObjectCreated:*
           rules:
             - prefix: input/
