@@ -18,7 +18,10 @@ flowchart TB
     sls("sls-thumbnail-generator")
     end
     A["higor_logo.jpg"] -- Put file --> input
-    input -- invoke lambda --> sls sls -- generate higor_logo_thumbnail.jpg --> output ```
+    input -- invoke lambda --> sls
+    sls -- generate higor_logo_thumbnail.jpg --> output
+```
+
 
 ## Serverless installation
 
@@ -45,6 +48,9 @@ aws s3 rm s3://sls-etl/output/higor_logo_thumbnail.jpg \
 && aws s3 rm s3://sls-etl/input/higor_logo.jpg \
 && sls remove --verbose
 ```
+
+## Demo
+
 
 ## Optimize time and billing
 
