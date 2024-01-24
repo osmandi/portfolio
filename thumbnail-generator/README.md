@@ -58,4 +58,4 @@ sls remove --verbose
 ## Optimize time and billing
 
 - Use múltiples AWS Lambda depending with different memory allocation. Not make sense to use a lambda with 5 GB RAM to process an image with 10 MB.
-- Implement AWS Layers.
+- Remplace Pillow for another library to generate thumbnail images.
