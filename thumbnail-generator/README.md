@@ -41,11 +41,9 @@ aws s3 cp ./static/higor_logo.jpg s3://sls-etl/input/
 
 ```Bash
 # Delete files in S3
-aws s3 rm s3://sls-etl/output/higor_logo_thumbnail.jpg
-aws s3 rm s3://sls-etl/input/higor_logo.jpg
-
-# Delete all resources
-sls remove --verbose
+aws s3 rm s3://sls-etl/output/higor_logo_thumbnail.jpg \
+&& aws s3 rm s3://sls-etl/input/higor_logo.jpg \
+&& sls remove --verbose
 ```
 
 
