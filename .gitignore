@@ -12,8 +12,6 @@ package-lock.json
 package.json
 
 # Images and other files
-*.png
-*.jpg 
 *.DS_Store
 
 # Serverless directories
