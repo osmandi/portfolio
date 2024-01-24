@@ -1,21 +1,18 @@
 # Thumbnail Generator
 
-Description: Generate a Thumbnail image in `128x128` using AWS Lambda with S3 events (AWS Lambda and S3 is simulated in your local).
+Description: Generate a Thumbnail image in `128x128` using AWS Lambda with S3 events.
 
 Technologies:
 - Python
 - Serverless Framework in AWS
-- Serverless Framework plugins (for local development):
-  - serverless-offline: Simulate AWS Lambda in local.
-  - serverless-s3-local: Simulate AWS S3 in local.
 
 **Architecture description**
 
 ```mermaid
 flowchart TB
     subgraph "AWS S3"
-    input("s3://local-bucket/input/")
-    output("s3://local-bucket/output/")
+    input("s3://sls-etl/input/")
+    output("s3://sls-etl/output/")
     end
     subgraph "AWS Lambda"
     sls("sls-thumbnail-generator")
@@ -25,50 +22,36 @@ flowchart TB
     sls -- generate higor_logo_thumbnail.jpg --> output
 ```
 
-## Instalation in local
+## Serverless installation
 
 ```Bash
 # Install serverless
 npm install -g serverless
-
-# Install serverless plugins
-sls plugin install --name serverless-offline
-sls plugin install --name serverless-s3-local
-
-# Setup S3 for offline development. Setting values S3RVER
-aws configure --profile s3local
-
-# Install requirements to emulate [Lambda runtime for Python 3.9](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html)
-# to implement pillow library in prod, use AWS Lambda Layer.
-python3.9 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
 ```
 
-## Run and probe in local
+## Deploy to prod and ussage
 
 ```Bash
-# Activate python environment
-source venv/bin/activate
+# Deploy
+sls deploy
 
-# Run serverless offline
-SLS_DEBUG=* sls offline start
-
-# Download image
-wget -O ./higor_logo.jpg https://raw.githubusercontent.com/osmandi/higor/master/higor_logo.jpg
-
-# Open orignal image
-open ./higor_logo.jpg
-
-# Put file with S3
-aws --endpoint http://localhost:4569 s3 cp ./higor_logo.jpg s3://local-bucket/input/higor_logo.jpg --profile s3local
-
-# Download thumbnail generated
-aws --endpoint http://localhost:4569 s3 cp s3://local-bucket/output/higor_logo_thumbnail.jpg . --profile s3local
-
-# Open thumbnail generated
-open ./higor_logo_thumbnail.jpg
+# Put image in S3
+aws s3 cp higor_logo.jpg s3://sls-etl/input/
 ```
+
+## Clean
+
+Delete all resources
+
+```Bash
+# Delete files in S3
+aws s3 rm s3://sls-etl/output/higor_logo_thumbnail.jpg
+aws s3 rm s3://sls-etl/input/higor_logo.jpg
+
+# Delete all resources
+sls remove --verbose
+```
+
 
 ## Demo
 
