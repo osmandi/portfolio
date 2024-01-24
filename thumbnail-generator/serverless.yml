@@ -5,10 +5,24 @@ provider:
   name: aws
   stage: dev
   runtime: python3.11
-  memorySize: 128
+  memorySize: 512
   region: us-east-1
+  iam:
+    role:
+      statements:
+        # Allow functions to list all buckets
+        - Effect: Allow
+          Action: 's3:ListBucket'
+          Resource: '*'
+        # Allow functions to read/write objects in a bucket
+        - Effect: Allow
+          Action:
+            - 's3:GetObject'
+            - 's3:PutObject'
+          Resource:
+            - '*'
   s3:
-    slsETL:
+    slsBucket:
       name: sls-etl
 
 package:
@@ -26,7 +40,7 @@ functions:
       - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p311-Pillow:2
     events:
       - s3:
-          bucket: slsETL
+          bucket: slsBucket
           event: s3:ObjectCreated:*
           rules:
             - prefix: input/
