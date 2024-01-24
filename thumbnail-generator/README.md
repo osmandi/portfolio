@@ -39,8 +39,6 @@ aws s3 cp ./static/higor_logo.jpg s3://sls-etl/input/
 
 ## Clean
 
-Delete all resources
-
 ```Bash
 # Delete files in S3
 aws s3 rm s3://sls-etl/output/higor_logo_thumbnail.jpg
