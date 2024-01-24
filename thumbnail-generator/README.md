@@ -18,9 +18,7 @@ flowchart TB
     sls("sls-thumbnail-generator")
     end
     A["higor_logo.jpg"] -- Put file --> input
-    input -- invoke lambda --> sls
-    sls -- generate higor_logo_thumbnail.jpg --> output
-```
+    input -- invoke lambda --> sls sls -- generate higor_logo_thumbnail.jpg --> output ```
 
 ## Serverless installation
 
@@ -36,7 +34,7 @@ npm install -g serverless
 sls deploy
 
 # Put image in S3
-aws s3 cp higor_logo.jpg s3://sls-etl/input/
+aws s3 cp ./static/higor_logo.jpg s3://sls-etl/input/
 ```
 
 ## Clean
