@@ -44,6 +44,7 @@ provider:
            - 'redshift:DescribeClusters'
            - 'redshift:GetClusterCredentialsWithIAM'
            - 'redshift:GetClusterCredentials'
+           - 'ec2:CreateNetworkInterface'
          Resource:
            - '*'
   environment:
@@ -52,6 +53,8 @@ provider:
     redshiftUsername: ${env:REDSHIFT_USERNAME}
     redshiftPassword: ${env:REDSHIFT_PASSWORD}
     redshiftIdentifier: ${env:REDSHIFT_IDENTIFIER}
+    awsAccessKey: ${env:AWS_ACCESS_KEY}
+    awsSecretKey: ${env:AWS_SECRET_KEY}
 
 resources:
   Resources:
@@ -75,6 +78,8 @@ resources:
 functions:
   api:
     handler: wsgi_handler.handler
+    layers:
+      - arn:aws:lambda:us-east-1:898466741470:layer:psycopg2-py39:1
     events:
       - http:
           private: true
