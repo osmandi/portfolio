@@ -42,6 +42,8 @@ provider:
            - 'redshift-data:ListTables'
            - 'redshift-data:DescribeTable'
            - 'redshift:DescribeClusters'
+           - 'redshift:GetClusterCredentialsWithIAM'
+           - 'redshift:GetClusterCredentials'
          Resource:
            - '*'
   environment:
@@ -49,6 +51,7 @@ provider:
     redshiftDbName: ${env:REDSHIFT_DB_NAME}
     redshiftUsername: ${env:REDSHIFT_USERNAME}
     redshiftPassword: ${env:REDSHIFT_PASSWORD}
+    redshiftIdentifier: ${env:REDSHIFT_IDENTIFIER}
 
 resources:
   Resources:
@@ -62,6 +65,7 @@ resources:
       DeletionPolicy: Delete
       Properties:
         NodeType: dc2.large
+        ClusterIdentifier: ${self:provider.environment.redshiftIdentifier}
         MasterUsername: ${self:provider.environment.redshiftUsername}
         MasterUserPassword: ${self:provider.environment.redshiftPassword}
         DBName: ${self:provider.environment.redshiftDbName}
