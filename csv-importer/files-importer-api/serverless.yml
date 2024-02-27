@@ -10,12 +10,18 @@ provider:
   name: aws
   runtime: python3.9
   region: us-east-1
+  apiGateway:
+    apiKeys:
+      - files-importer-api-key
 
 functions:
   api:
     handler: wsgi_handler.handler
     events:
-      - httpApi: '*'
+      - http:
+          private: true
+          path: hello
+          method: GET
 
 plugins:
   - serverless-wsgi
