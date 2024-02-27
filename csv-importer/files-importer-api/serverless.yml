@@ -34,6 +34,7 @@ resources:
   Resources:
     bucketBase:
       Type: AWS::S3::Bucket
+      DeletionPolicy: Delete
       Properties:
         BucketName: ${self:provider.environment.bucketName}
 
