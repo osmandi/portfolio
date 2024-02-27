@@ -13,6 +13,27 @@ provider:
   apiGateway:
     apiKeys:
       - files-importer-api-key
+  iam:
+   role:
+     statements:
+       # Allow functions to list all buckets
+       - Effect: Allow
+         Action: 's3:ListBucket'
+         Resource: '*'
+       # Allow functions to read/write objects in a bucket
+       - Effect: Allow
+         Action:
+           - 's3:GetObject'
+           - 's3:PutObject'
+         Resource:
+           - '*'
+
+resources:
+  Resources:
+    bucketBase:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: osmandi-sls-csv-importer
 
 functions:
   api:
@@ -22,6 +43,10 @@ functions:
           private: true
           path: hello
           method: GET
+      - http:
+          private: true
+          path: upload
+          method: POST
 
 plugins:
   - serverless-wsgi
