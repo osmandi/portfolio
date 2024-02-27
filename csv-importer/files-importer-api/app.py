@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, make_response, request
 import boto3 # Inside AWS Lambda Runtime
+from os import environ
 
 app = Flask(__name__)
 
@@ -24,7 +25,7 @@ def upload_files():
         print("There are a file")
         file = request.files.get('csv')
         # Export to S3
-        bucket_name = "osmandi-sls-csv-importer"
+        bucket_name = environ["bucketName"]
         s3 = boto3.resource("s3")
         s3.Bucket(bucket_name).upload_fileobj(file, "test.csv")
     else:
