@@ -41,6 +41,7 @@ provider:
            - 'redshift-data:ListSchemas'
            - 'redshift-data:ListTables'
            - 'redshift-data:DescribeTable'
+           - 'redshift:DescribeClusters'
          Resource:
            - '*'
   environment:
