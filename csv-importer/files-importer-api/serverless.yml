@@ -1,6 +1,7 @@
 service: files-importer-api
 
 frameworkVersion: '3'
+useDotenv: true
 
 custom:
   wsgi:
@@ -27,8 +28,26 @@ provider:
            - 's3:PutObject'
          Resource:
            - '*'
+       # Redshift permissions
+       - Effect: Allow
+         Action:
+           - 'redshift-data:BatchExecuteStatement'
+           - 'redshift-data:ExecuteStatement'
+           - 'redshift-data:CancelStatement'
+           - 'redshift-data:ListStatements'
+           - 'redshift-data:GetStatementResult'
+           - 'redshift-data:DescribeStatement'
+           - 'redshift-data:ListDatabases'
+           - 'redshift-data:ListSchemas'
+           - 'redshift-data:ListTables'
+           - 'redshift-data:DescribeTable'
+         Resource:
+           - '*'
   environment:
     bucketName: osmandi-sls-csv-importer
+    redshiftDbName: ${env:REDSHIFT_DB_NAME}
+    redshiftUsername: ${env:REDSHIFT_USERNAME}
+    redshiftPassword: ${env:REDSHIFT_PASSWORD}
 
 resources:
   Resources:
@@ -37,6 +56,16 @@ resources:
       DeletionPolicy: Delete
       Properties:
         BucketName: ${self:provider.environment.bucketName}
+    redshift:
+      Type: AWS::Redshift::Cluster
+      DeletionPolicy: Delete
+      Properties:
+        NodeType: dc2.large
+        MasterUsername: ${self:provider.environment.redshiftUsername}
+        MasterUserPassword: ${self:provider.environment.redshiftPassword}
+        DBName: ${self:provider.environment.redshiftDbName}
+        ClusterType: single-node
+        NumberOfNodes: 1
 
 functions:
   api:
