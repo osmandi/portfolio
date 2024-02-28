@@ -20,8 +20,8 @@ flowchart LR
     lambda_api("Lambda - files-importer-api-dev-API")
     gateway -- /upload --> lambda_load --> redshift
     redshift --> lambda_api
-    lambda_api <-- /employees --> gateway
-    lambda_api <-- /hired --> gateway
+    lambda_api -- /employees --> gateway
+    lambda_api -- /hired --> gateway
     end
     user <--> gateway
 ```
