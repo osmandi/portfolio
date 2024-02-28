@@ -4,15 +4,9 @@ from os import environ
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def hello_from_root():
     return jsonify(message='Hello from root!')
-
-
-@app.route("/hello")
-def hello():
-    return jsonify(message='Hello from path!')
 
 @app.errorhandler(404)
 def resource_not_found(e):
@@ -24,10 +18,10 @@ def upload_files():
         # If file is a csv
         print("There are a file")
         file = request.files.get('csv')
+        filename = file.filename
         # Export to S3
         bucket_name = environ["bucketName"]
         s3 = boto3.resource("s3")
-        s3.Bucket(bucket_name).upload_fileobj(file, "test.csv")
-    else:
-        return jsonify(message="Not csv file"), 400
-    return jsonify(message="Hello")
+        s3.Bucket(bucket_name).upload_fileobj(file, filename)
+        return make_response(jsonify(message="File loaded successfully"), 200)
+    return make_response(jsonify(message="Error file not uploaded"), 400)
