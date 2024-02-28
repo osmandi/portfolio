@@ -10,7 +10,7 @@ custom:
 provider:
   name: aws
   runtime: python3.9
-  region: us-east-1
+  region: ${env:REGION_NAME}
   apiGateway:
     apiKeys:
       - files-importer-api-key
@@ -55,6 +55,7 @@ provider:
     redshiftIdentifier: ${env:REDSHIFT_IDENTIFIER}
     awsAccessKey: ${env:AWS_ACCESS_KEY}
     awsSecretKey: ${env:AWS_SECRET_KEY}
+    region: ${env:REGION_NAME}
 
 resources:
   Resources:
@@ -76,13 +77,18 @@ resources:
         NumberOfNodes: 1
 
 functions:
+  load:
+    handler: load.main
+    events:
+      - s3:
+          bucket: ${self:provider.environment.bucketName}
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - suffix: .csv
   api:
     handler: wsgi_handler.handler
     events:
-      - http:
-          private: true
-          path: hello
-          method: GET
       - http:
           private: true
           path: upload
