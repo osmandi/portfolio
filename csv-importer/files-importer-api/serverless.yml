@@ -48,7 +48,7 @@ provider:
          Resource:
            - '*'
   environment:
-    bucketName: osmandi-sls-csv-importer
+    bucketName: ${env:BUCKET_NAME}
     redshiftDbName: ${env:REDSHIFT_DB_NAME}
     redshiftUsername: ${env:REDSHIFT_USERNAME}
     redshiftPassword: ${env:REDSHIFT_PASSWORD}
@@ -78,8 +78,6 @@ resources:
 functions:
   api:
     handler: wsgi_handler.handler
-    layers:
-      - arn:aws:lambda:us-east-1:898466741470:layer:psycopg2-py39:1
     events:
       - http:
           private: true
