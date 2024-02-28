@@ -156,9 +156,10 @@ For additional local development capabilities of `serverless-wsgi` plugin, pleas
 
 ## Actions to improve this project
 
-- Create and management AWS Roles to avoid the usage of `AWS_ACCESS_KEY`, `AWS_SECRET_KEY` and Redshift credentials.
-- Configure `staging`, `UAT`, and `production` environment.
+- Create and manage AWS Roles to avoid the usage of `AWS_ACCESS_KEY`, `AWS_SECRET_KEY`, and Redshift credentials.
+- Setting up a VPC to connect all resources, such as Redshift with EC2. With that EC2, we can deploy a BI tool to connect to that Redshift.
+- Configure `staging`, `UAT`, and `production` environments.
 - Create a custom API URL.
-- Improve performance in Redshift using `Materialized view`, `dbt (Data Build Tool)` or `Distkey`.
-- Implement monitoring tool like `Serverless Framework Dashboard` or change S3 Events to `Apache Airflow` implementation.
+- Improve performance in Redshift using `Materialized view`, `dbt (Data Build Tool)`, or `Distkey`.
+- Implement a monitoring tool like `Serverless Framework Dashboard` or change S3 Events to an `Apache Airflow` implementation.
 - Implement CI/CD with `GitHub Actions`.
