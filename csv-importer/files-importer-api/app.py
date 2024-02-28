@@ -12,6 +12,30 @@ def hello_from_root():
 def resource_not_found(e):
     return make_response(jsonify(error='Not found!'), 404)
 
+@app.route("/employees", methods=["GET"])
+def employees():
+    from time import sleep
+    # Get environment variables
+    aws_access_key_id=environ["awsAccessKey"]
+    aws_secret_access_key=environ["awsSecretKey"]
+    region=environ["region"]
+    redshift_identifier=environ["redshiftIdentifier"]
+    redshift_db_name=environ["redshiftDbName"]
+    redshift_username=environ["redshiftUsername"]
+    
+    client_redshift = boto3.client('redshift-data', region_name=region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+    response = client_redshift.execute_statement(ClusterIdentifier=redshift_identifier, Database=redshift_db_name, DbUser=redshift_username, Sql="SELECT * from jobs limit 10;")
+
+    # Wait query execute_statement
+    query_status = client_redshift.describe_statement(Id=response["Id"])
+    while query_status["Status"] not in ["FINISHED", "ABORTED", "FAILED"]:
+        query_status = client_redshift.describe_statement(Id=response["Id"])
+        print(query_status)
+        sleep(1) # Wait for 1 second
+
+    result = client_redshift.get_statement_result(Id=response["Id"])
+    return make_response(result, 200)
+
 @app.route("/upload", methods=['POST'])
 def upload_files():
     if 'csv' in request.files:

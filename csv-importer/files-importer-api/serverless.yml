@@ -93,6 +93,10 @@ functions:
           private: true
           path: upload
           method: POST
+      - http:
+          private: true
+          path: employees
+          method: GET
 
 plugins:
   - serverless-wsgi
