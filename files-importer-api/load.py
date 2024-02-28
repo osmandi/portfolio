@@ -1,10 +1,21 @@
 """
-Project: csv-importer
-Description: Get a CSV from S3 to import to Redshift
+AWS Redshift Data Loading Script
+
+This script is designed to be triggered by an AWS Lambda function in response to S3 events. It copies data from a CSV file stored in an S3 bucket to an Amazon Redshift cluster.
+
+Dependencies:
+- Boto3: AWS SDK for Python, used for interacting with AWS services.
+
+Note1: Ensure that the required environment variables are set for AWS access and Redshift configuration. See env_example file.
+
+Note2: This script assumes that the Lambda function is configured to receive S3 events with the necessary permissions.
+
 Author: http://github.com/osmandi
+Year: 2024
 """
 
-import boto3 # Inside AWS Lambda Runtime
+
+import boto3
 from os import environ
 
 # Get environment variables
@@ -18,6 +29,16 @@ redshift_username=environ["redshiftUsername"]
 client_redshift = boto3.client('redshift-data', region_name=region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 
 def main(event, context):
+    """
+    Lambda handler function triggered by S3 events to copy data from a CSV file to Redshift.
+
+    Args:
+        event (dict): AWS Lambda event object.
+        context (object): AWS Lambda context object.
+
+    Returns:
+        None
+    """
 
     # Get S3 file key
     s3_bucket = event['Records'][0]['s3']['bucket']['name']
