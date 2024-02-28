@@ -161,3 +161,4 @@ For additional local development capabilities of `serverless-wsgi` plugin, pleas
 - Create a custom API URL.
 - Improve performance in Redshift using `Materialized view`, `dbt (Data Build Tool)` or `Distkey`.
 - Implement monitoring tool like `Serverless Framework Dashboard` or change S3 Events to `Apache Airflow` implementation.
+- Implement CI/CD with `GitHub Actions`.
