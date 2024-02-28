@@ -142,6 +142,16 @@ At this point, you can run your application locally with the following command:
 serverless wsgi serve
 ```
 
+**Testing**
+
+```Bash
+# Install dependencies
+pip3 install boto3 pytest
+
+# Run tests
+python3 -m pytest
+```
+
 For additional local development capabilities of `serverless-wsgi` plugin, please refer to corresponding [GitHub repository](https://github.com/logandk/serverless-wsgi).
 
 ## Actions to improve this project

@@ -157,4 +157,4 @@ def upload_files():
         s3 = boto3.resource("s3")
         s3.Bucket(bucket_name).upload_fileobj(file, filename)
         return make_response(jsonify(message="File loaded successfully"), 200)
-    return make_response(jsonify(message="Error file not uploaded"), 400)
+    return make_response(jsonify(message="Error - The file is not a CSV file"), 415)
