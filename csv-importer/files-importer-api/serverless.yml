@@ -97,6 +97,10 @@ functions:
           private: true
           path: employees
           method: GET
+      - http:
+          private: true
+          path: hired
+          method: GET
 
 plugins:
   - serverless-wsgi
