@@ -24,7 +24,26 @@ def employees():
     redshift_username=environ["redshiftUsername"]
     
     client_redshift = boto3.client('redshift-data', region_name=region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
-    response = client_redshift.execute_statement(ClusterIdentifier=redshift_identifier, Database=redshift_db_name, DbUser=redshift_username, Sql="SELECT * from jobs limit 10;")
+    query_employees = """
+    WITH base AS (
+    SELECT d.department, j.job, extract(quarter FROM he.datetime) as quarter
+    FROM hired_employees he
+    INNER JOIN departments d ON d.id = he.department_id
+    INNER JOIN jobs j ON j.id = he.job_id
+    WHERE he.datetime between '2021-01-01' and '2021-12-31'
+    )
+    SELECT 
+    	department
+    	,job
+        ,SUM(CASE WHEN quarter = 1 THEN 1 ELSE 0 END) AS Q1
+        ,SUM(CASE WHEN quarter = 2 THEN 1 ELSE 0 END) AS Q2
+        ,SUM(CASE WHEN quarter = 3 THEN 1 ELSE 0 END) AS Q3
+        ,SUM(CASE WHEN quarter = 4 THEN 1 ELSE 0 END) AS Q4
+    FROM base b
+    GROUP BY department, job
+    ORDER BY department, job;
+    """
+    response = client_redshift.execute_statement(ClusterIdentifier=redshift_identifier, Database=redshift_db_name, DbUser=redshift_username, Sql=query_employees)
 
     # Wait query execute_statement
     query_status = client_redshift.describe_statement(Id=response["Id"])
