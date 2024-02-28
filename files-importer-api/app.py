@@ -25,6 +25,7 @@ from os import environ
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def hello_from_root():
     """
@@ -34,7 +35,8 @@ def hello_from_root():
         JSON: A JSON response with a hello message.
     """
 
-    return jsonify(message='Hello from root!')
+    return jsonify(message="Hello from root!")
+
 
 @app.errorhandler(404)
 def resource_not_found(e):
@@ -48,7 +50,8 @@ def resource_not_found(e):
         JSON: A JSON response indicating the resource was not found.
     """
 
-    return make_response(jsonify(error='Not found!'), 404)
+    return make_response(jsonify(error="Not found!"), 404)
+
 
 @app.route("/hired", methods=["GET"])
 def hired():
@@ -60,15 +63,21 @@ def hired():
     """
 
     from time import sleep
+
     # Get environment variables
-    aws_access_key_id=environ["awsAccessKey"]
-    aws_secret_access_key=environ["awsSecretKey"]
-    region=environ["region"]
-    redshift_identifier=environ["redshiftIdentifier"]
-    redshift_db_name=environ["redshiftDbName"]
-    redshift_username=environ["redshiftUsername"]
-    
-    client_redshift = boto3.client('redshift-data', region_name=region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+    aws_access_key_id = environ["awsAccessKey"]
+    aws_secret_access_key = environ["awsSecretKey"]
+    region = environ["region"]
+    redshift_identifier = environ["redshiftIdentifier"]
+    redshift_db_name = environ["redshiftDbName"]
+    redshift_username = environ["redshiftUsername"]
+
+    client_redshift = boto3.client(
+        "redshift-data",
+        region_name=region,
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
     query_hired = """
     SELECT d.id id, d.department, count(1) AS hired
     FROM hired_employees he
@@ -76,17 +85,23 @@ def hired():
     WHERE he.datetime between '2021-01-01' and '2021-12-31'
     GROUP BY d.id, d.department;
     """
-    response = client_redshift.execute_statement(ClusterIdentifier=redshift_identifier, Database=redshift_db_name, DbUser=redshift_username, Sql=query_hired)
+    response = client_redshift.execute_statement(
+        ClusterIdentifier=redshift_identifier,
+        Database=redshift_db_name,
+        DbUser=redshift_username,
+        Sql=query_hired,
+    )
 
     # Wait query execute_statement
     query_status = client_redshift.describe_statement(Id=response["Id"])
     while query_status["Status"] not in ["FINISHED", "ABORTED", "FAILED"]:
         query_status = client_redshift.describe_statement(Id=response["Id"])
         print(query_status)
-        sleep(1) # Wait for 1 second
+        sleep(1)  # Wait for 1 second
 
     result = client_redshift.get_statement_result(Id=response["Id"])
     return make_response(result, 200)
+
 
 @app.route("/employees", methods=["GET"])
 def employees():
@@ -98,15 +113,21 @@ def employees():
     """
 
     from time import sleep
+
     # Get environment variables
-    aws_access_key_id=environ["awsAccessKey"]
-    aws_secret_access_key=environ["awsSecretKey"]
-    region=environ["region"]
-    redshift_identifier=environ["redshiftIdentifier"]
-    redshift_db_name=environ["redshiftDbName"]
-    redshift_username=environ["redshiftUsername"]
-    
-    client_redshift = boto3.client('redshift-data', region_name=region, aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+    aws_access_key_id = environ["awsAccessKey"]
+    aws_secret_access_key = environ["awsSecretKey"]
+    region = environ["region"]
+    redshift_identifier = environ["redshiftIdentifier"]
+    redshift_db_name = environ["redshiftDbName"]
+    redshift_username = environ["redshiftUsername"]
+
+    client_redshift = boto3.client(
+        "redshift-data",
+        region_name=region,
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
     query_employees = """
     WITH base AS (
     SELECT d.department, j.job, extract(quarter FROM he.datetime) as quarter
@@ -126,19 +147,25 @@ def employees():
     GROUP BY department, job
     ORDER BY department, job;
     """
-    response = client_redshift.execute_statement(ClusterIdentifier=redshift_identifier, Database=redshift_db_name, DbUser=redshift_username, Sql=query_employees)
+    response = client_redshift.execute_statement(
+        ClusterIdentifier=redshift_identifier,
+        Database=redshift_db_name,
+        DbUser=redshift_username,
+        Sql=query_employees,
+    )
 
     # Wait query execute_statement
     query_status = client_redshift.describe_statement(Id=response["Id"])
     while query_status["Status"] not in ["FINISHED", "ABORTED", "FAILED"]:
         query_status = client_redshift.describe_statement(Id=response["Id"])
         print(query_status)
-        sleep(1) # Wait for 1 second
+        sleep(1)  # Wait for 1 second
 
     result = client_redshift.get_statement_result(Id=response["Id"])
     return make_response(result, 200)
 
-@app.route("/upload", methods=['POST'])
+
+@app.route("/upload", methods=["POST"])
 def upload_files():
     """
     Endpoint to upload a CSV file to S3.
@@ -147,10 +174,10 @@ def upload_files():
         JSON: A JSON response indicating the success or failure of the file upload.
     """
 
-    if 'csv' in request.files:
+    if "csv" in request.files:
         # If file is a csv
         print("There are a file")
-        file = request.files.get('csv')
+        file = request.files.get("csv")
         filename = file.filename
         # Export to S3
         bucket_name = environ["bucketName"]
