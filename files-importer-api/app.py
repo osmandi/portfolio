@@ -1,19 +1,64 @@
+"""
+AWS Flask Application
+
+This Flask application interacts with AWS services such as Amazon Redshift and Amazon S3 to perform data analytics tasks. It provides endpoints for retrieving information about hired employees, analyzing employee data, and uploading CSV files to an S3 bucket.
+
+Endpoints:
+- /: Hello message from the root.
+- /hired: Retrieve data about hired employees from Redshift.
+- /employees: Analyze employee data from Redshift.
+- /upload: Upload a CSV file to an S3 bucket.
+
+Dependencies:
+- Flask: Web framework for building APIs.
+- Boto3: AWS SDK for Python, used for interacting with AWS services.
+
+Note: Ensure that the required environment variables are set for AWS access and Redshift configuration. See env_example file.
+
+Author: http://github.com/osmandi
+Year: 2024
+"""
+
 from flask import Flask, jsonify, make_response, request
-import boto3 # Inside AWS Lambda Runtime
+import boto3
 from os import environ
 
 app = Flask(__name__)
 
 @app.route("/")
 def hello_from_root():
+    """
+    Endpoint to get a hello message from the root.
+
+    Returns:
+        JSON: A JSON response with a hello message.
+    """
+
     return jsonify(message='Hello from root!')
 
 @app.errorhandler(404)
 def resource_not_found(e):
+    """
+    Error handler for 404 Not Found.
+
+    Args:
+        e: Exception object.
+
+    Returns:
+        JSON: A JSON response indicating the resource was not found.
+    """
+
     return make_response(jsonify(error='Not found!'), 404)
 
 @app.route("/hired", methods=["GET"])
 def hired():
+    """
+    Endpoint to retrieve hired employees data from Redshift.
+
+    Returns:
+        JSON: A JSON response with the result of the query.
+    """
+
     from time import sleep
     # Get environment variables
     aws_access_key_id=environ["awsAccessKey"]
@@ -45,6 +90,13 @@ def hired():
 
 @app.route("/employees", methods=["GET"])
 def employees():
+    """
+    Endpoint to retrieve employees data from Redshift.
+
+    Returns:
+        JSON: A JSON response with the result of the query.
+    """
+
     from time import sleep
     # Get environment variables
     aws_access_key_id=environ["awsAccessKey"]
@@ -88,6 +140,13 @@ def employees():
 
 @app.route("/upload", methods=['POST'])
 def upload_files():
+    """
+    Endpoint to upload a CSV file to S3.
+
+    Returns:
+        JSON: A JSON response indicating the success or failure of the file upload.
+    """
+
     if 'csv' in request.files:
         # If file is a csv
         print("There are a file")
