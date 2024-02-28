@@ -158,4 +158,6 @@ For additional local development capabilities of `serverless-wsgi` plugin, pleas
 
 - Create and management AWS Roles to avoid the usage of `AWS_ACCESS_KEY`, `AWS_SECRET_KEY` and Redshift credentials.
 - Configure `staging`, `UAT`, and `production` environment.
-- Create a cusotm API URL.
+- Create a custom API URL.
+- Improve performance in Redshift using `Materialized view`, `dbt (Data Build Tool)` or `Distkey`.
+- Implement monitoring tool like `Serverless Framework Dashboard` or change S3 Events to `Apache Airflow` implementation.
