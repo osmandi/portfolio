@@ -1,119 +1,133 @@
-<!--
-title: 'Serverless Framework Python Flask API on AWS'
-description: 'This template demonstrates how to develop and deploy a simple Python Flask API running on AWS Lambda using the traditional Serverless Framework.'
-layout: Doc
-framework: v3
-platform: AWS
-language: Python
-priority: 2
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+# Files Importer API
 
-# Serverless Framework Python Flask API on AWS
+The `files-importer-api` is a Serverless application designed to facilitate the efficient import and management of CSV files. It leverages AWS services, including S3 for file storage and AWS Redshift for data processing. The API provides endpoints for uploading CSV files, retrieving employee data, and accessing information about hired employees.
 
-This template demonstrates how to develop and deploy a simple Python Flask API service running on AWS Lambda using the traditional Serverless Framework.
+**AWS Resources**:
 
+- [AWS Redshift](https://aws.amazon.com/redshift/):  The project leverages the unparalleled data warehousing capabilities of Amazon Redshift, seamlessly integrating it with the files-importer-api to process and analyze employee data efficiently.
+- [Amazon S3 Bucket](https://aws.amazon.com/s3/): The heart of the data storage solution lies in Amazon S3 buckets, providing scalable, secure, and durable object storage for the CSV files managed by the files-importer-api.
+- [AWS Lambda](https://docs.aws.amazon.com/lambda/): AWS Lambda is a compute service that runs your code in response to events and automatically manages the compute resources, making it the fastest way to turn an idea into a modern, production, serverless applications. With pay as you go model.
 
-## Anatomy of the template
+**Architecture**
 
-This template configures a single function, `api`, which is responsible for handling all incoming requests thanks to configured `httpApi` events. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). As the events are configured in a way to accept all incoming requests, `Flask` framework is responsible for routing and handling requests internally. The implementation takes advantage of `serverless-wsgi`, which allows you to wrap WSGI applications such as Flask apps. To learn more about `serverless-wsgi`, please refer to corresponding [GitHub repository](https://github.com/logandk/serverless-wsgi). Additionally, the template relies on `serverless-python-requirements` plugin for packaging dependencies from `requirements.txt` file. For more details about `serverless-python-requirements` configuration, please refer to corresponding [GitHub repository](https://github.com/UnitedIncome/serverless-python-requirements).
-
-## Usage
-
-### Prerequisites
-
-In order to package your dependencies locally with `serverless-python-requirements`, you need to have `Python3.9` installed locally. You can create and activate a dedicated virtual environment with the following command:
-
-```bash
-python3.9 -m venv ./venv
-source ./venv/bin/activate
+```mermaid
+flowchart LR
+    user("User")
+    subgraph "AWS"
+    gateway("API Gateway")
+    redshift[("Redshift")]
+    lambda_load("Lambda - files-importer-api-dev-load") 
+    lambda_api("Lambda - files-importer-api-dev-API")
+    gateway -- /upload --> lambda_load --> redshift
+    redshift --> lambda_api
+    lambda_api <-- /employees --> gateway
+    lambda_api <-- /hired --> gateway
+    end
+    user <--> gateway
 ```
 
-Alternatively, you can also use `dockerizePip` configuration from `serverless-python-requirements`. For details on that, please refer to corresponding [GitHub repository](https://github.com/UnitedIncome/serverless-python-requirements).
+**Features**
 
-### Deployment
+- Scalability: Enjoy the benefits of effortless scalability across the entire serverless architecture, adapting to the demands of your data processing and file management needs.
+- Cost-Effective: With a serverless approach, you only pay for the compute resources you use, ensuring optimal cost-effectiveness in both the serverless data ecosystem and the files-importer-api.
+- Automation: The project simplifies complex workflows by automating processes through Lambda functions, reducing manual intervention, and increasing efficiency. The files-importer-api further streamlines file management tasks.
 
-This example is made to work with the Serverless Framework dashboard, which includes advanced features such as CI/CD, monitoring, metrics, etc.
+**Endpoints**
 
-In order to deploy with dashboard, you need to first login with:
+1. **Hired Employees Data**
+   - **Endpoint:** `/hired`
+   - **Method:** `GET`
+   - **Description:** Retrieves data about hired employees from Amazon Redshift for the specified time period.
 
-```
-serverless login
-```
+2. **Employees Data Analysis**
+   - **Endpoint:** `/employees`
+   - **Method:** `GET`
+   - **Description:** Analyzes employee data from Amazon Redshift, providing a breakdown by department, job, and quarter.
 
-install dependencies with:
+3. **File Upload to S3**
+   - **Endpoint:** `/upload`
+   - **Method:** `POST`
+   - **Description:** Uploads a CSV file to an S3 bucket. Expects a file with the key 'csv' in the request.
 
-```
-npm install
-```
+*Dependencies*:
 
-and
+- **Flask**
+  - **Description:** Web framework for building APIs.
+  - **Installation:** `pip install Flask==1.1.4`
 
-```
-pip install -r requirements.txt
-```
+- **Werkzeug**
+  - **Description:** Collection of utilities for WSGI applications.
+  - **Installation:** `pip install Werkzeug==1.0.1`
 
-and then perform deployment with:
+- **Markupsafe**
+  - **Description:** Implements a XML/HTML/XHTML Markup safe string.
+  - **Installation:** `pip install markupsafe==2.0.1`
 
-```
-serverless deploy
-```
+> **Note:** Boto3, the AWS SDK for Python, is available by default in AWS Lambda runtimes. You do not need to explicitly include it in the requirements file for Lambda-based deployments.
 
-After running deploy, you should see output similar to:
+## Serverless installation
 
-```bash
-Deploying aws-python-flask-api-project to stage dev (us-east-1)
-
-✔ Service deployed to stack aws-python-flask-api-project-dev (182s)
-
-endpoint: ANY - https://xxxxxxxx.execute-api.us-east-1.amazonaws.com
-functions:
-  api: aws-python-flask-api-project-dev-api (1.5 MB)
-```
-
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/).
-
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/dev/
+```Bash
+# Install serverless
+npm install -g serverless
 ```
 
-Which should result in the following response:
+## Setting environment variables
 
-```
-{"message":"Hello from root!"}
-```
-
-Calling the `/hello` path with:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/dev/hello
-```
-
-Should result in the following response:
-
-```bash
-{"message":"Hello from path!"}
+Create the file `.env` and add the following environment variables (Replace "XXXXXXXX" with the actual values for each environment variable.):
+```Bash
+REDSHIFT_DB_NAME=XXXXXXXX # Name of the Redshift database
+REDSHIFT_USERNAME=XXXXXXXX # Username for connecting to the Redshift cluster
+REDSHIFT_PASSWORD=XXXXXXXX # Password for connecting to the Redshift cluster (Note: It's advisable not to expose passwords directly in environment variables)
+REDSHIFT_IDENTIFIER=XXXXXXXX # Identifier of the Redshift cluster
+BUCKET_NAME=XXXXXXXX # Name of the S3 bucket for file storage
+AWS_ACCESS_KEY=XXXXXXXX # AWS access key for authentication
+AWS_SECRET_KEY=XXXXXXXX # AWS secret key for authentication
+AWS_API_KEY=XXXXXXXX # AWS API key for authentication. You can get it after infra deployment in Gateways API -> Api Key
+REGION_NAME=XXXXXXXX # AWS region where resources are located
 ```
 
-If you try to invoke a path or method that does not have a configured handler, e.g. with:
+Load those environment variables: `source .env`
 
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/dev/nonexistent
+## Deploy to prod and ussage
+
+Deploy infra:
+```Bash
+# Deploy
+sls deploy
 ```
 
-You should receive the following response:
+Load data:
+```Bash
+# Load sql/ddls.sql query in Redshift console
 
-```bash
-{"error":"Not Found!"}
+# Load files
+cd data
+curl -X POST 'https://[AWS_LAMBDA_API_ENDPOINT]/dev/upload' --header "x-api-key: $AWS_API_KEY" -F "csv=@hired_employees.csv"
+curl -X POST 'https://[AWS_LAMBDA_API_ENDPOINT]/dev/upload' --header "x-api-key: $AWS_API_KEY" -F "csv=@departments.csv"
+curl -X POST 'https://[AWS_LAMBDA_API_ENDPOINT]/dev/upload' --header "x-api-key: $AWS_API_KEY" -F "csv=@jobs.csv"
 ```
 
-### Local development
+*Endpoint to GET number of employees hired for departments, job and quarter in 2021*:
+```Bash
+curl -X GET 'https://[AWS_LAMBDA_API_ENDPOINT]/dev/employees' --header "x-api-key: $AWS_API_KEY"
+```
+
+*Endpoint to GET number of employees hired for department*:
+```Bash
+curl -X GET 'https://[AWS_LAMBDA_API_ENDPOINT]/dev/hired' --header "x-api-key: $AWS_API_KEY"
+```
+
+## Clean
+
+```Bash
+aws s3 rm s3://$BUCKET_NAME/*.csv \
+&& sls remove --verbose
+```
+
+## Local development and testing
+
+**Local development**
 
 Thanks to capabilities of `serverless-wsgi`, it is also possible to run your application locally, however, in order to do that, you will need to first install `werkzeug` dependency, as well as all other dependencies listed in `requirements.txt`. It is recommended to use a dedicated virtual environment for that purpose. You can install all needed dependencies with the following commands:
 
@@ -129,3 +143,9 @@ serverless wsgi serve
 ```
 
 For additional local development capabilities of `serverless-wsgi` plugin, please refer to corresponding [GitHub repository](https://github.com/logandk/serverless-wsgi).
+
+## Actions to improve this project
+
+- Create and management AWS Roles to avoid the usage of `AWS_ACCESS_KEY`, `AWS_SECRET_KEY` and Redshift credentials.
+- Configure `staging`, `UAT`, and `production` environment.
+- Create a cusotm API URL.
