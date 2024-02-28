@@ -89,7 +89,7 @@ REGION_NAME=XXXXXXXX # AWS region where resources are located
 
 Load those environment variables: `source .env`
 
-## Deploy to prod and ussage
+## Deploy to prod and usage
 
 Deploy infra:
 ```Bash
