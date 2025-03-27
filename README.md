@@ -8,6 +8,10 @@ Personal projects in Data Engineering.
   - Develop a CSV data processing pipeline with Flask, Boto3, Serverless Framework, and AWS services.
   - This project allows users to upload CSV files to an S3 bucket using a Flask API endpoint.
   - The Serverless Framework automates the deployment of AWS Lambda functions triggered by S3 events, S3 Bucket and Redshift, ensuring seamless scalability.
+- [files-importer-api-v2](https://github.com/osmandi/files-importer-api-v2):
+  - Another implementation of files-importer-api
+  - Used [Tinybird](https://www.tinybird.co/) to create the API.
+  - Built the dashboard in Tableau Public.
 - [Analyze open traffic data to visualize  mobility and congestion patterns in 
 Bogota](https://github.com/osmandi/UNIR-TFM):
   - Used Terraform to build infrastructure on GCP using Dataproc.
